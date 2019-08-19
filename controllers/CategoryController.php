@@ -33,19 +33,19 @@ class CategoryController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
             'backend' => [
-                'class' => BackendFilter::className(),
+                'class' => BackendFilter::class,
                 'actions' => [
                     '*',
                 ],
             ],
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'allow' => true,
@@ -53,7 +53,7 @@ class CategoryController extends Controller
                         'matchCallback' => function () {
                             return $this->getModule()->adminMatchCallback;
                         },
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -79,6 +79,7 @@ class CategoryController extends Controller
      * Displays a single Categorymodel.
      * @param integer $id
      * @return mixed
+     * @throws \yii\web\NotFoundHttpException
      */
     public function actionView($id)
     {
@@ -95,7 +96,7 @@ class CategoryController extends Controller
      * Finds the Categorymodel based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Categorythe loaded model
+     * @return Category the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
@@ -120,7 +121,7 @@ class CategoryController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect([
                 'view',
-                'id' => is_a($model, '\yii\mongodb\ActiveRecord') ? (string)$model->id : $model->id
+                'id' => is_a($model, '\yii\mongodb\ActiveRecord') ? (string)$model->id : $model->id,
             ]);
         } else {
             return $this->render('create', [
@@ -134,6 +135,7 @@ class CategoryController extends Controller
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
+     * @throws \yii\web\NotFoundHttpException
      */
     public function actionUpdate($id)
     {
@@ -143,7 +145,8 @@ class CategoryController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect([
                 'view',
-                'id' => is_a($model, '\yii\mongodb\ActiveRecord') ? (string)$model->id : $model->id
+                'id' => is_a($model, '\yii\mongodb\ActiveRecord') ?
+                    (string)$model->id : $model->id,
             ]);
         } else {
             return $this->render('update', [

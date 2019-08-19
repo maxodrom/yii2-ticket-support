@@ -33,19 +33,19 @@ class TicketController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
             'backend' => [
-                'class' => BackendFilter::className(),
+                'class' => BackendFilter::class,
                 'actions' => [
                     'manage',
                 ],
             ],
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'allow' => true,
@@ -122,13 +122,13 @@ class TicketController extends Controller
 
             return $this->redirect([
                 'view',
-                'id' => $model->hash_id
+                'id' => $model->hash_id,
             ]);
         }
 
         return $this->render('view', [
             'model' => $model,
-            'reply' => $reply
+            'reply' => $reply,
         ]);
     }
 
@@ -197,7 +197,7 @@ class TicketController extends Controller
 
         return $this->redirect([
             'view',
-            'id' => $model->hash_id
+            'id' => $model->hash_id,
         ]);
     }
 
@@ -206,6 +206,9 @@ class TicketController extends Controller
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     * @throws \yii\web\NotFoundHttpException
      */
     public function actionDelete($id)
     {

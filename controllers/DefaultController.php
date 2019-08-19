@@ -29,13 +29,13 @@ class DefaultController extends Controller
     {
         return [
             'backend' => [
-                'class' => BackendFilter::className(),
+                'class' => BackendFilter::class,
                 'actions' => [
                     '*',
                 ],
             ],
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'allow' => true,
@@ -58,12 +58,20 @@ class DefaultController extends Controller
         return $this->render('index');
     }
 
+    /**
+     * @return \yii\web\Response
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionFetchMail()
     {
         $id = \Yii::$app->get($this->getModule()->queueComponent)->push(new FetchMailJob());
         if ($id) {
-            \Yii::$app->session->setFlash('success', \akiraz2\support\Module::t('support', 'Added job to fetch tickets from mailbox, please wait'));
+            \Yii::$app->session->setFlash(
+                'success',
+                \akiraz2\support\Module::t('support', 'Added job to fetch tickets from mailbox, please wait')
+            );
         }
+
         return $this->redirect('/support/ticket/manage');
     }
 }
