@@ -67,6 +67,7 @@ class BackendFilter extends Behavior
                 throw new NotFoundHttpException('The requested page does not exist.');
             }
         }
+
         return $event->isValid;
     }
 }
