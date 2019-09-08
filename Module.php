@@ -1,6 +1,7 @@
 <?php
 /**
  * @author akiraz@bk.ru
+ * @author Max Alexandrov <max@7u3.ru>
  * @link https://github.com/akiraz2/yii2-ticket-support
  * @copyright 2018 akiraz2
  * @license MIT
@@ -27,7 +28,7 @@ class Module extends \yii\base\Module
      */
     public $controllerNamespace = 'akiraz2\support\controllers';
 
-    /** @var linked user (for example, 'common\models\User::class' */
+    /** @var string Linked user (for example, 'common\models\User::class' */
     public $userModel;
 
     /** @var string Primary Key for user table, by default 'id' */
@@ -56,7 +57,7 @@ class Module extends \yii\base\Module
     /** @var string config.php: `'id' => 'app-backend',` */
     public $appBackendId = 'app-backend';
 
-    /** @var bool|function for accessRule matchCallback
+    /** @var bool|callable for accessRule matchCallback
      * for example,
      *      'adminMatchCallback' => function () {
      *          return \Yii::$app->user->identity->getIsAdmin();
@@ -67,17 +68,17 @@ class Module extends \yii\base\Module
     /** @var string wysiwyg component for creating content of ticket */
     public $redactorModule = 'redactor';
 
-    /** @var string|Queue component for queue  */
+    /** @var string|Queue component for queue */
     public $queueComponent = 'queue';
 
     public $countDaysToClose = 7;
 
     /** @var array Imap config for fetch mailbox
      * 'imap' => [
-        'host' => 'imap.site.com',
-        'username' => 'support@site.com',
-        'password' => '123456789879',
-    ] */
+     * 'host' => 'imap.site.com',
+     * 'username' => 'support@site.com',
+     * 'password' => '123456789879',
+     * ] */
     public $imap = [];
 
     public $showUsernameSupport = true;
@@ -98,7 +99,7 @@ class Module extends \yii\base\Module
 
     /**
      * Translate message
-     * @param $message
+     * @param string $message
      * @param array $params
      * @param null $language
      * @return mixed
@@ -116,15 +117,17 @@ class Module extends \yii\base\Module
      * The translation will be conducted according to the message category and the target language will be used.
      *
      * You can add parameters to a translation message that will be substituted with the corresponding value after
-     * translation. The format for this is to use curly brackets around the parameter name as you can see in the following example:
+     * translation. The format for this is to use curly brackets around the parameter name as you can see in the
+     * following example:
      *
      * ```php
      * $username = 'Alexander';
      * echo \Yii::t('app', 'Hello, {username}!', ['username' => $username]);
      * ```
      *
-     * Further formatting of message parameters is supported using the [PHP intl extensions](http://www.php.net/manual/en/intro.intl.php)
-     * message formatter. See [[\yii\i18n\I18N::translate()]] for more details.
+     * Further formatting of message parameters is supported using the [PHP intl
+     * extensions](http://www.php.net/manual/en/intro.intl.php) message formatter. See [[\yii\i18n\I18N::translate()]]
+     * for more details.
      *
      * @param string $category the message category.
      * @param string $message the message to be translated.
@@ -171,7 +174,10 @@ class Module extends \yii\base\Module
         for ($i = 0; $i < count($mailsIds); $i++) {
             $mail = $mailbox->getMail($mailsIds[$i], false);
             preg_match("/\[$name.*#(.{10,})\]/", $mail->subject, $output_array);
-            if (isset($output_array[1]) && ($ticket = Ticket::findOne(['hash_id' => $output_array[1], 'user_contact' => $mail->fromAddress])) !== null) {
+            if (isset($output_array[1]) && ($ticket = Ticket::findOne([
+                    'hash_id' => $output_array[1],
+                    'user_contact' => $mail->fromAddress,
+                ])) !== null) {
                 // reply
                 $reply = new Content();
                 $reply->id_ticket = $ticket->id;
@@ -191,6 +197,7 @@ class Module extends \yii\base\Module
             }
             //$mailbox->deleteMail($mailsIds[$i]);
         }
+
         return true;
     }
 
@@ -207,6 +214,7 @@ class Module extends \yii\base\Module
             return null;
         }
         $mailbox = new Mailbox("{" . $host . ":" . $port . "/imap/ssl/novalidate-cert}INBOX", $username, $password);
+
         return $mailbox;
     }
 }
